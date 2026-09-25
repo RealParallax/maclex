@@ -5,7 +5,8 @@ A small Python starter project for a macOS voice assistant.
 Current MVP:
 - scans BLE devices using Bleak
 - sends commands to a Groq-hosted model
-- speaks responses using macOS `say`
+- speaks responses using macOS say
+- uses a warm, clear Samantha voice by default, with configurable voice and speaking rate
 - therefore uses whatever macOS audio output is currently selected, including a Bluetooth speaker
 
 ## 1. Requirements
@@ -36,13 +37,32 @@ export GROQ_API_KEY="your_key_here"
 
 Or add that export to your `~/.zshrc`.
 
-By default, Mac Alexa uses `llama-3.3-70b-versatile`. You can override the model with:
+By default, Mac Alexa uses `openai/gpt-oss-120b`. You can override the model with:
 
 ```bash
 export GROQ_MODEL="your_groq_model"
 ```
 
-## 4. Bluetooth permission
+## 4. Configure the voice
+
+The default voice is macOS Samantha at a slightly faster conversational rate:
+
+```bash
+export MAC_VOICE="Samantha"
+export MAC_VOICE_RATE="175"
+```
+
+You can see the voices installed on your Mac with:
+
+```bash
+say -v '?'
+```
+
+Then set `MAC_VOICE` to the voice you prefer.
+
+This is an Alexa-inspired conversational style, not Amazon's proprietary Alexa voice.
+
+## 5. Bluetooth permission
 
 Run:
 
@@ -60,7 +80,7 @@ and enable Bluetooth access for the app you are using to run Python.
 
 Bleak's macOS backend uses Apple's CoreBluetooth APIs. macOS represents devices using UUIDs rather than normal Bluetooth MAC addresses, so the identifier shown by the script may not look like the address printed on the speaker.
 
-## 5. Select the speaker
+## 6. Select the speaker
 
 Before testing speech, select the Bluetooth speaker as the Mac's audio output:
 
@@ -69,12 +89,12 @@ System Settings → Sound → Output → your Bluetooth speaker
 Then test:
 
 ```bash
-say "Hello. This is my Mac assistant."
+say -v Samantha -r 175 "Hello. This is my Mac assistant."
 ```
 
 The voice should come through the selected output.
 
-## 6. Start the assistant
+## 7. Start the assistant
 
 ```bash
 source .venv/bin/activate
