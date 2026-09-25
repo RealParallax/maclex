@@ -1,4 +1,4 @@
-openai
+groq
 bleak
 sounddevice
 numpy
