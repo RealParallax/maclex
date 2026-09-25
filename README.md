@@ -97,3 +97,28 @@ The text interface is still available:
 Potential future improvements include a signed app bundle, launch-at-login support, a global keyboard push-to-talk shortcut, wake-word detection, conversation memory, and macOS controls.
 
 Important: BLE discovery is not a complete inventory of every classic Bluetooth device connected to macOS. Audio speakers are commonly classic Bluetooth/A2DP devices, so BLE results should not be treated as the authoritative audio-device list.
+
+
+## Desktop GUI
+
+Run:
+
+    source .venv/bin/activate
+    export GROQ_API_KEY="your_key_here"
+    python gui.py
+
+The GUI replaces the terminal display with a simple desktop window. Type a request and click Ask. It then asks “Was this a question?” with Yes/No buttons before sending the request to Groq.
+
+## Faster responses
+
+The default chat model is `openai/gpt-oss-20b`, which Groq currently lists as a fast production model. You can override it with `GROQ_MODEL`. The voice wake listener also uses shorter default audio windows to reduce perceived latency.
+
+## Terminal mode
+
+You can still ask directly from the terminal:
+
+    source .venv/bin/activate
+    export GROQ_API_KEY="your_key_here"
+    python assistant.py
+
+The terminal mode sends the typed request directly to the assistant and speaks the answer.
