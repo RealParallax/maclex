@@ -168,7 +168,7 @@ class MacAlexaMenuBar(rumps.App):
                     self.processing = True
                     threading.Thread(
                         target=self.handle_wake,
-                        args=(device_index, client),
+                        args=(device_index, client, text),
                         daemon=True,
                     ).start()
 
@@ -179,13 +179,17 @@ class MacAlexaMenuBar(rumps.App):
             self.running = False
             self.listen_item.title = "Start Listening for “Hey PC”"
 
-    def handle_wake(self, device_index, client):
+    def handle_wake(self, device_index, client, wake_text):
         try:
-            self.set_status("Listening for command…", "🔴")
-            audio = record_audio(device_index, COMMAND_SECONDS)
-            user_text = transcribe_audio(audio, client)
+            lower = wake_text.lower()
+            start = lower.find(WAKE_PHRASE)
+            normalized = wake_text[start + len(WAKE_PHRASE):].strip(" ,.!?")
 
-            normalized = user_text.strip()
+            if not normalized:
+                self.set_status("Listening for command…", "🔴")
+                audio = record_audio(device_index, COMMAND_SECONDS)
+                normalized = transcribe_audio(audio, client).strip()
+
             if contains_wake_phrase(normalized):
                 lower = normalized.lower()
                 start = lower.find(WAKE_PHRASE)
