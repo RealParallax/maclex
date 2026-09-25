@@ -14,8 +14,8 @@ from assistant import ask_ai, bluetooth_context, speak
 
 SAMPLE_RATE = int(os.environ.get("MAC_SAMPLE_RATE", "16000"))
 CHANNELS = 1
-WAKE_SECONDS = float(os.environ.get("MAC_WAKE_SECONDS", "2.5"))
-COMMAND_SECONDS = float(os.environ.get("MAC_COMMAND_SECONDS", "10"))
+WAKE_SECONDS = float(os.environ.get("MAC_WAKE_SECONDS", "1.5"))
+COMMAND_SECONDS = float(os.environ.get("MAC_COMMAND_SECONDS", "7"))
 TRANSCRIPTION_MODEL = os.environ.get("GROQ_TRANSCRIPTION_MODEL", "whisper-large-v3-turbo")
 WAKE_PHRASE = os.environ.get("MAC_WAKE_PHRASE", "hey pc").lower()
 
