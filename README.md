@@ -1,108 +1,99 @@
 # Mac Alexa
 
-A small Python starter project for a macOS voice assistant.
+A small Python macOS voice assistant with a menu-bar push-to-talk button.
 
-Current MVP:
-- scans BLE devices using Bleak
-- sends commands to an OpenAI model
-- speaks responses using macOS `say`
-- therefore uses whatever macOS audio output is currently selected, including a Bluetooth speaker
+## What it does
 
-## 1. Requirements
+- Lives in the macOS menu bar
+- Click Start Listening and speak into your Mac microphone
+- Click Stop Listening when you finish
+- Sends the recording to Groq Whisper for speech-to-text
+- Sends the transcript to a Groq chat model
+- Speaks the answer with macOS say
+- Uses the Mac's selected audio output, including a Bluetooth speaker
+- Includes currently discovered BLE devices in the assistant context
+
+The menu bar status changes between Ready, Listening, Transcribing, Thinking, and Speaking.
+
+## Requirements
 
 - macOS
 - Python 3.11+
-- Homebrew (recommended)
-- An OpenAI API key
-- A Bluetooth speaker paired with your Mac
+- A Groq API key
+- Microphone access for the Python app
+- A Bluetooth speaker is optional
 
-## 2. Create the environment
+## Setup
 
-```bash
-cd mac-alexa
-python3 -m venv .venv
-source .venv/bin/activate
-python -m pip install --upgrade pip
-pip install -r requirements.txt
-```
+    cd mac-alexa
+    python3 -m venv .venv
+    source .venv/bin/activate
+    python -m pip install --upgrade pip
+    pip install -r requirements.txt
 
-## 3. Configure your API key
+Set your Groq key:
 
-Create `.env` from `.env.example`, then export the key:
+    export GROQ_API_KEY="your_key_here"
 
-```bash
-cp .env.example .env
-nano .env
-```
+Optional settings:
 
-For the first version, load it into your shell:
+    export GROQ_MODEL="openai/gpt-oss-120b"
+    export GROQ_TRANSCRIPTION_MODEL="whisper-large-v3-turbo"
+    export MAC_VOICE="Samantha"
+    export MAC_VOICE_RATE="175"
 
-```bash
-export OPENAI_API_KEY="your_key_here"
-```
+Groq currently documents whisper-large-v3-turbo and whisper-large-v3 for speech-to-text. The menu-bar app defaults to the faster turbo model.
 
-Or add that export to your `~/.zshrc`.
+## Microphone permission
 
-## 4. Bluetooth permission
+The first time macOS needs microphone access, allow it for the application launching Python.
 
-Run:
+If permission is denied, open:
 
-```bash
-python bluetooth_devices.py
-```
+System Settings -> Privacy & Security -> Microphone
 
-macOS may ask Terminal/Python for Bluetooth access. Allow it.
+Enable access for your Terminal/Python app.
 
-If access was denied, go to:
+## Run the menu-bar assistant
 
-System Settings → Privacy & Security → Bluetooth
+    source .venv/bin/activate
+    export GROQ_API_KEY="your_key_here"
+    python menu_bar.py
 
-and enable Bluetooth access for the app you are using to run Python.
+You should see a microphone icon in the menu bar.
 
-Bleak's macOS backend uses Apple's CoreBluetooth APIs. macOS represents devices using UUIDs rather than normal Bluetooth MAC addresses, so the identifier shown by the script may not look like the address printed on the speaker.
+Click it and choose Start Listening. Speak, then click Stop Listening. The app will transcribe your speech, ask Groq for an answer, and speak the response.
 
-## 5. Select the speaker
+Keep the terminal open while running this development version so you can see errors and transcripts.
 
-Before testing speech, select the Bluetooth speaker as the Mac's audio output:
+## Bluetooth output
 
-System Settings → Sound → Output → your Bluetooth speaker
+Select your Bluetooth speaker under:
 
-Then test:
+System Settings -> Sound -> Output
 
-```bash
-say "Hello. This is my Mac assistant."
-```
+macOS say will use the currently selected audio output.
 
-The voice should come through the selected output.
+## Voice
 
-## 6. Start the assistant
+The default macOS voice is Samantha:
 
-```bash
-source .venv/bin/activate
-export OPENAI_API_KEY="your_key_here"
-python assistant.py
-```
+    say -v Samantha -r 175 "Hello. This is my Mac assistant."
 
-Try:
+List installed voices with:
 
-```text
-What Bluetooth devices can you see?
-What time is it?
-Tell me a joke.
-```
+    say -v '?'
 
-## What comes next
+The voice is an Alexa-inspired assistant style, not Amazon's proprietary Alexa voice.
 
-This is intentionally the first milestone rather than a fake "Alexa clone".
+## Terminal mode
 
-The next version should add:
-1. microphone recording
-2. speech-to-text
-3. wake word detection ("Hey Mac")
-4. tool/function calling
-5. macOS controls such as opening apps and controlling volume
-6. a small menu-bar application
-7. automatic detection of the current audio output
-8. conversation memory
+The text interface is still available:
 
-Important: BLE discovery is not the same as a complete inventory of every classic Bluetooth device connected to macOS. Audio speakers are commonly classic Bluetooth/A2DP devices, so the next version should query macOS's audio system as well as CoreBluetooth.
+    python assistant.py
+
+## Next steps
+
+Potential future improvements include a signed app bundle, launch-at-login support, a global keyboard push-to-talk shortcut, wake-word detection, conversation memory, and macOS controls.
+
+Important: BLE discovery is not a complete inventory of every classic Bluetooth device connected to macOS. Audio speakers are commonly classic Bluetooth/A2DP devices, so BLE results should not be treated as the authoritative audio-device list.
