@@ -4,7 +4,7 @@ A small Python starter project for a macOS voice assistant.
 
 Current MVP:
 - scans BLE devices using Bleak
-- sends commands to an OpenAI model
+- sends commands to a Groq-hosted model
 - speaks responses using macOS `say`
 - therefore uses whatever macOS audio output is currently selected, including a Bluetooth speaker
 
@@ -13,7 +13,7 @@ Current MVP:
 - macOS
 - Python 3.11+
 - Homebrew (recommended)
-- An OpenAI API key
+- A Groq API key
 - A Bluetooth speaker paired with your Mac
 
 ## 2. Create the environment
@@ -26,22 +26,21 @@ python -m pip install --upgrade pip
 pip install -r requirements.txt
 ```
 
-## 3. Configure your API key
+## 3. Configure your Groq API key
 
-Create `.env` from `.env.example`, then export the key:
-
-```bash
-cp .env.example .env
-nano .env
-```
-
-For the first version, load it into your shell:
+Export your Groq API key:
 
 ```bash
-export OPENAI_API_KEY="your_key_here"
+export GROQ_API_KEY="your_key_here"
 ```
 
 Or add that export to your `~/.zshrc`.
+
+By default, Mac Alexa uses `llama-3.3-70b-versatile`. You can override the model with:
+
+```bash
+export GROQ_MODEL="your_groq_model"
+```
 
 ## 4. Bluetooth permission
 
@@ -79,7 +78,7 @@ The voice should come through the selected output.
 
 ```bash
 source .venv/bin/activate
-export OPENAI_API_KEY="your_key_here"
+export GROQ_API_KEY="your_key_here"
 python assistant.py
 ```
 
